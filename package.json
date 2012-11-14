@@ -1,0 +1,20 @@
+{
+    "name": "Unit"
+  , "description": "Empowered Numbers"
+  , "version": "0.0.1"
+  , "keywords": ["number", "node"]
+  , "author": "Spencer Zhang"
+  , "repository": {
+      "type": "git"
+    , "url": "https://github.com/sepmein/unit.git"
+  }
+  , "licenses": [
+    {
+        "type": "Apache-2.0"
+      , "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ]
+  , "dependencies": {
+    "underscore" : "latest"
+  }
+}
