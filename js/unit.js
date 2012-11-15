@@ -20,8 +20,8 @@ unit.classification = [{
 	base: 100,
 	unit: 'm'
 }];
-
-var Unit = Object.create(null);
+//尝试以Object为模板创建Unit，是Unit继承isPrototypeOf方法
+var Unit = Object.create(Object());
 Object.defineProperty(Unit, 'type', {
 	writable: true,
 	configurable: true,
@@ -85,7 +85,8 @@ unit.sum = function(arr) {
 
 //helper: get base
 unit.getBase = function(o) {
-	if(1) {
+	//check if o is the instance of Unit
+	if(Unit.isPrototypeOf(o)) {
 		var b, n;
 		_.each(Unit.classification, function(unitClass) {
 			if(unitClass.unit === o.state) {
