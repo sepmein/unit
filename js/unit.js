@@ -66,7 +66,7 @@ unit.create = function(value, u) {
 };
 
 unit.register = function(n, o, relation) {
-	// body...
+
 };
 
 unit.add = function(o1, o2) {
@@ -80,7 +80,17 @@ unit.add = function(o1, o2) {
 };
 
 unit.sum = function(arr) {
+	var checker = 0;
+	_.each(arr, function(a) {
+		if(!Unit.isPrototypeOf(a)) {
+			checker = 1;
+		}
+	});
+	if(checker) {
 
+	} else {
+		return new Error('{ERROR}[Sum]被加数必须为Unit对象');
+	}
 };
 
 //helper: get base
@@ -99,12 +109,23 @@ unit.getBase = function(o) {
 		} else {
 			return b;
 		}
-
 	} else {
 		return new Error('getBase: the argument should be a "Unit".');
 	}
 };
 
+unit.changeState(o, state) {
 
+};
+
+//helper: ECMAScript clone
+
+
+function clone(proto) {
+	function Dummy() {}
+	Dummy.prototype = proto;
+	Dummy.prototype.constructor = Dummy;
+	return new Dummy();
+}
 
 module.exports = unit;
