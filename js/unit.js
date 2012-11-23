@@ -71,11 +71,75 @@ unit.register = function(n, o, relation) {
 
 unit.add = function(o1, o2) {
 	var checkType = (o1.type === o2.type);
+	var checkState = (o1.state === o2.state);
 	if(!checkType) {
 		return new Error("Numbers' type should be the same");
+	} else if(!checkState) {
+		var n1 = o1.value;
+		var b1 = unit.getBase(o1);
+		var n2 = o2.value;
+		var b2 = unit.getBase(o2);
+		var vb1 = n1 * b1;
+		var vb2 = n2 * b2;
+		var vb = vb1 + vb2;
+		var v;
+		var middleBase = (function() {
+			var mb = (b1 >= b2) ? ((b1 - b2) / 2 + b2) : ((b2 - b1) / 2 + b1);
+			return mb;
+		})();
+		console.log(middleBase);
+		console.log(vb);
+		var b = "";
+		if(vb >= middleBase) {
+			b = (b1 >= b2) ? o1.state : o2.state;
+		} else {
+			b = (b1 >= b2) ? o2.state : o1.state;
+		}
+		if(b === o1.state) {
+			v = n1 + n2 * b2 / b1;
+		} else {
+			v = n1 * b1 / b2 + n2;
+		}
+		return unit.create(v, b);
 	} else {
-		var v = o1.value
-		unit.create()
+		return unit.create((o1.value + o2.value), o1.state);
+	}
+};
+
+unit.minus = function(o1, o2) {
+	var checkType = (o1.type === o2.type);
+	var checkState = (o1.state === o2.state);
+	if(!checkType) {
+		return new Error("Numbers' type should be the same");
+	} else if(!checkState) {
+		var n1 = o1.value;
+		var b1 = unit.getBase(o1);
+		var n2 = o2.value;
+		var b2 = unit.getBase(o2);
+		var vb1 = n1 * b1;
+		var vb2 = n2 * b2;
+		var vb = Math.abs(vb1 - vb2);
+		var v;
+		var middleBase = (function() {
+			var mb = (b1 >= b2) ? ((b1 - b2) / 2 + b2) : ((b2 - b1) / 2 + b1);
+			return mb;
+		})();
+		console.log(middleBase);
+		console.log(vb);
+		var b = "";
+		if(vb >= middleBase) {
+			b = (b1 >= b2) ? o1.state : o2.state;
+		} else {
+			b = (b1 >= b2) ? o2.state : o1.state;
+		}
+		if(b === o1.state) {
+			v = n1 - n2 * b2 / b1;
+		} else {
+			v = n1 * b1 / b2 - n2;
+		}
+		return unit.create(v, b);
+	} else {
+		return unit.create((o1.value + o2.value), o1.state);
 	}
 };
 
@@ -114,12 +178,20 @@ unit.getBase = function(o) {
 	}
 };
 
-unit.changeState(o, state) {
+//修改为同类型的单位，
+unit.changeState = function(o, state) {
 
 };
 
-//helper: ECMAScript clone
+unit.toPrec = function(num, numLength) {
+	if(!isNaN(num)) {
+		num = num.toPrecision(numLength);
+	} else {
+		num = parseFloat(num).toPrecision(numLength);
+	}
+};
 
+//helper: ECMAScript clone
 
 function clone(proto) {
 	function Dummy() {}
