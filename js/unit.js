@@ -186,32 +186,27 @@ unit.getBase = function(o) {
 	}
 };
 
-//修改为同类型的单位，
+//修改为同类型的单位
+//基本完成，但是：若转换状态出错，由于nodejs的回调特性，使得错误信息无法传递至上层
+//需要改进
 unit.changeState = function(o, state) {
-
+	var resultUnit = null;
 	_.each(unit.classification, function(unitClass) {
 		if(unitClass.unit === state) {
 			var resultUnit = unitClass;
-		}
-	});
-	//隐患：回调函数若还未范围resultUnit如何？
-	if(resultUnit) {
-		//如果在库中检索发现state
-		if(resultUnit.type === o.type) {
-			if(!(resultUnit.unit === o.stat)) {
-				//根据两个单位的base
+			//如果类型相同并且状态不同
+			if((resultUnit.type === o.type) && (!(resultUnit.unit === o.stat))) {
 				o.value = o.value * unit.getBase(o) / resultUnit.base;
+				o.state = state;
+				return 1;
 			} else {
-				//单位相同就没必要转换了
-				return o;
+				return new Error('单位相同或类型不同');
 			}
 		} else {
-			return new Error("不同类型的单位之间的数值无法转换");
+			//无法找到unit为state的单位
+			return new Error("无法找到unit为state的单位");
 		}
-	} else {
-		//无法找到unit为state的单位
-		return new Error("无法找到unit为state的单位");
-	}
+	});
 };
 
 unit.toPrec = function(num, numLength) {

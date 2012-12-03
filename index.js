@@ -23,6 +23,9 @@ var m2 = unit.minus(num2, num1);
 console.log(result);
 unit.changeState(result,'cm');
 console.log(result);
+unit.changeState(result,'m');
+
+console.log(result);
 //console.log(m1);
 //console.log(m2);
 
