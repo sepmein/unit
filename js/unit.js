@@ -40,7 +40,6 @@ Object.defineProperty(Unit, 'state', {
 
 unit.create = function(value, u) {
 	var n = Object.create(Unit);
-
 	var checkUnitClass = function() {
 			var checker = 0;
 			//if the unit created is in the list then return 1 else return 0
@@ -73,8 +72,11 @@ unit.add = function(o1, o2) {
 	var checkType = (o1.type === o2.type);
 	var checkState = (o1.state === o2.state);
 	if(!checkType) {
+		//检查是否是同一类型的单位
 		return new Error("Numbers' type should be the same");
 	} else if(!checkState) {
+		//是同一单位，但状态不同：
+		//首先计算各种中间量
 		var n1 = o1.value;
 		var b1 = unit.getBase(o1);
 		var n2 = o2.value;
@@ -83,23 +85,29 @@ unit.add = function(o1, o2) {
 		var vb2 = n2 * b2;
 		var vb = vb1 + vb2;
 		var v;
+		//两个值的基的中间值
 		var middleBase = (function() {
 			var mb = (b1 >= b2) ? ((b1 - b2) / 2 + b2) : ((b2 - b1) / 2 + b1);
 			return mb;
 		})();
-		console.log(middleBase);
-		console.log(vb);
+		//console.log(middleBase);
+		//console.log(vb);
 		var b = "";
+		//智能判断单位
+		//如果两数值的值基和更接近大的那个数值，那单位使用大的那个数值的单位
+		//如果两数值的值基和更接近小的那个数值，那单位使用小的那个数值的单位
 		if(vb >= middleBase) {
 			b = (b1 >= b2) ? o1.state : o2.state;
 		} else {
 			b = (b1 >= b2) ? o2.state : o1.state;
 		}
+		//根据确定的单位确定格式化最后计算的单位
 		if(b === o1.state) {
 			v = n1 + n2 * b2 / b1;
 		} else {
 			v = n1 * b1 / b2 + n2;
 		}
+		//创建一个Unit,并返回
 		return unit.create(v, b);
 	} else {
 		return unit.create((o1.value + o2.value), o1.state);
@@ -181,6 +189,29 @@ unit.getBase = function(o) {
 //修改为同类型的单位，
 unit.changeState = function(o, state) {
 
+	_.each(unit.classification, function(unitClass) {
+		if(unitClass.unit === state) {
+			var resultUnit = unitClass;
+		}
+	});
+	//隐患：回调函数若还未范围resultUnit如何？
+	if(resultUnit) {
+		//如果在库中检索发现state
+		if(resultUnit.type === o.type) {
+			if(!(resultUnit.unit === o.stat)) {
+				//根据两个单位的base
+				o.value = o.value * unit.getBase(o) / resultUnit.base;
+			} else {
+				//单位相同就没必要转换了
+				return o;
+			}
+		} else {
+			return new Error("不同类型的单位之间的数值无法转换");
+		}
+	} else {
+		//无法找到unit为state的单位
+		return new Error("无法找到unit为state的单位");
+	}
 };
 
 unit.toPrec = function(num, numLength) {

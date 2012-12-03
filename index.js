@@ -21,8 +21,10 @@ var result = unit.add(num1, num2);
 var m1 = unit.minus(num1, num2);
 var m2 = unit.minus(num2, num1);
 console.log(result);
-console.log(m1);
-console.log(m2);
+unit.changeState(result,'cm');
+console.log(result);
+//console.log(m1);
+//console.log(m2);
 
 
 //structure of the object created by unit.plus
