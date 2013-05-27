@@ -165,6 +165,13 @@ unit.sum = function(arr) {
 	}
 };
 
+unit.mutiply = function(argument) {
+	// body...
+};
+
+unit.divide = function(argument) {
+	
+};
 //helper: get base
 unit.getBase = function(o) {
 	//check if o is the instance of Unit
